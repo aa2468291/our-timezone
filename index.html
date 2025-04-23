@@ -57,28 +57,22 @@
         let firstZone = "";
         let secondZone = "";
 
+        // Updated emoji: Wen = bubble tea (🧋), Jacky = cactus (🌵)
         const wenEmoji = "🧋";     // Bubble tea, iconic for Taiwan
         const jackyEmoji = "🌵";   // Cactus, associated with Mexico
 
         if (meTimeZone === "Asia/Taipei") {
-          firstLabel = `${wenEmoji} Taiwan: `;
+          // Wen is opening
+          firstLabel = `${wenEmoji} Wen's timezone (Taiwan): `;
           secondLabel = `${jackyEmoji} Jacky's timezone (Mexico): `;
           firstZone = wenZone;
           secondZone = jackyZone;
         } else {
+          // Jacky is opening
           firstLabel = `${jackyEmoji} Jacky's timezone (Mexico): `;
-          secondLabel = `${wenEmoji} Taiwan: `;
+          secondLabel = `${wenEmoji} Wen's timezone (Taiwan): `;
           firstZone = jackyZone;
           secondZone = wenZone;
-        }
-
-        function formatTimeWithChinesePeriod(date) {
-          const hours = date.getHours();
-          const minutes = date.getMinutes().toString().padStart(2, '0');
-          const seconds = date.getSeconds().toString().padStart(2, '0');
-          const period = hours < 12 ? '上午' : '下午';
-          const hour12 = hours % 12 === 0 ? 12 : hours % 12;
-          return `${period} ${hour12}:${minutes}:${seconds}`;
         }
 
         function showTime() {
@@ -86,8 +80,8 @@
           const firstTime = new Date(now.toLocaleString("en-US", { timeZone: firstZone }));
           const secondTime = new Date(now.toLocaleString("en-US", { timeZone: secondZone }));
 
-          document.getElementById("firstTime").innerHTML = firstLabel + '<span>' + formatTimeWithChinesePeriod(firstTime) + '</span>';
-          document.getElementById("secondTime").innerHTML = secondLabel + '<span>' + formatTimeWithChinesePeriod(secondTime) + '</span>';
+          document.getElementById("firstTime").innerHTML = firstLabel + '<span>' + firstTime.toLocaleTimeString('en-US') + '</span>';
+          document.getElementById("secondTime").innerHTML = secondLabel + '<span>' + secondTime.toLocaleTimeString('en-US') + '</span>';
         }
 
         showTime();
