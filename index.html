@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Our Timezone</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: linear-gradient(to right, #f8f9fa, #e0f7fa);
+      color: #333;
+      text-align: center;
+      padding: 2em;
+    }
+    h1 {
+      margin-bottom: 0.5em;
+    }
+    .time-box {
+      font-size: 1.5em;
+      margin: 1em 0;
+    }
+    .note {
+      font-size: 1em;
+      color: #666;
+    }
+    .time-line {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5em;
+      margin: 0.5em 0;
+    }
+    .icon {
+      font-size: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Our Timezone</h1>
+  <div id="timeContainer" class="time-box">
+    <div id="firstTime" class="time-line"></div>
+    <div id="secondTime" class="time-line"></div>
+  </div>
+
+  <script>
+    async function updateTimeByIP() {
+      try {
+        const response = await fetch('https://ipapi.co/json/');
+        const data = await response.json();
+
+        const wenZone = "Asia/Taipei";
+        const jackyZone = "America/Chihuahua";
+        const meTimeZone = data.timezone;
+
+        let firstLabel = "";
+        let secondLabel = "";
+        let firstZone = "";
+        let secondZone = "";
+
+        // Updated emoji: Wen = bubble tea (🧋), Jacky = cactus (🌵)
+        const wenEmoji = "🧋";     // Bubble tea, iconic for Taiwan
+        const jackyEmoji = "🌵";   // Cactus, associated with Mexico
+
+        if (meTimeZone === "Asia/Taipei") {
+          // Wen is opening
+          firstLabel = `${wenEmoji} Wen's timezone (Taiwan): `;
+          secondLabel = `${jackyEmoji} Jacky's timezone (Mexico): `;
+          firstZone = wenZone;
+          secondZone = jackyZone;
+        } else {
+          // Jacky is opening
+          firstLabel = `${jackyEmoji} Jacky's timezone (Mexico): `;
+          secondLabel = `${wenEmoji} Wen's timezone (Taiwan): `;
+          firstZone = jackyZone;
+          secondZone = wenZone;
+        }
+
+        function showTime() {
+          const now = new Date();
+          const firstTime = new Date(now.toLocaleString("en-US", { timeZone: firstZone }));
+          const secondTime = new Date(now.toLocaleString("en-US", { timeZone: secondZone }));
+
+          document.getElementById("firstTime").innerHTML = firstLabel + '<span>' + firstTime.toLocaleTimeString('en-US') + '</span>';
+          document.getElementById("secondTime").innerHTML = secondLabel + '<span>' + secondTime.toLocaleTimeString('en-US') + '</span>';
+        }
+
+        showTime();
+        setInterval(showTime, 1000);
+      } catch (error) {
+        document.getElementById("firstTime").textContent = "Error: Unable to retrieve location information.";
+        document.getElementById("secondTime").textContent = "Error: Unable to retrieve location information.";
+        console.error("IP detection failed:", error);
+      }
+    }
+
+    updateTimeByIP();
+  </script>
+</body>
+</html>
