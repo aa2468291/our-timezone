@@ -33,6 +33,11 @@
     .icon {
       font-size: 1.2em;
     }
+    .countdown-box {
+      margin-top: 2em;
+      font-size: 1.2em;
+      color: #555;
+    }
   </style>
 </head>
 <body>
@@ -41,6 +46,9 @@
     <div id="firstTime" class="time-line"></div>
     <div id="secondTime" class="time-line"></div>
   </div>
+
+  <!-- Countdown section -->
+  <div id="countdown" class="countdown-box"></div>
 
   <script>
     async function updateTimeByIP() {
@@ -57,8 +65,8 @@
         let firstZone = "";
         let secondZone = "";
 
-        const wenEmoji = "🧋";     // Bubble tea, iconic for Taiwan
-        const jackyEmoji = "🌵";   // Cactus, associated with Mexico
+        const wenEmoji = "🧋";     // Bubble tea
+        const jackyEmoji = "🌵";   // Cactus
 
         if (meTimeZone === "Asia/Taipei") {
           firstLabel = `${wenEmoji} Wen (Taiwan): `;
@@ -90,11 +98,33 @@
           document.getElementById("secondTime").innerHTML = secondLabel + '<span>' + formatTimeWithChinesePeriod(secondTime) + '</span>';
         }
 
+        function showCountdown() {
+          const now = new Date();
+          const taipeiNow = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Taipei" }));
+          const targetDate = new Date("2025-05-14T00:00:00+08:00");
+
+          const diff = targetDate - taipeiNow;
+          const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+
+          if (diffDays > 0) {
+            document.getElementById("countdown").textContent = `Back to Taiwan in ${diffDays} day(s)`;
+          } else if (diffDays === 0) {
+            document.getElementById("countdown").textContent = `Back to Taiwan today!`;
+          } else {
+            document.getElementById("countdown").textContent = `Already back in Taiwan!`;
+          }
+        }
+
         showTime();
-        setInterval(showTime, 1000);
+        showCountdown();
+        setInterval(() => {
+          showTime();
+          showCountdown();
+        }, 1000);
       } catch (error) {
         document.getElementById("firstTime").textContent = "Error: Unable to retrieve location information.";
         document.getElementById("secondTime").textContent = "Error: Unable to retrieve location information.";
+        document.getElementById("countdown").textContent = "Error: Unable to calculate countdown.";
         console.error("IP detection failed:", error);
       }
     }
